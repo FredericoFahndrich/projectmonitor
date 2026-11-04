@@ -1,4 +1,24 @@
-# Project Monitor 1.0
+# Project Monitor
+
+## Versão independente (um único HTML)
+
+Abra ou baixe [Project-Monitor-independente.html](Project-Monitor-independente.html). O arquivo contém HTML, CSS e JavaScript e não exige instalação de dependências.
+
+Os dados são salvos somente no navegador utilizado. Use as exportações para guardar uma cópia antes de limpar os dados do navegador. Esta versão não possui autenticação real, aprovação de contas, permissões compartilhadas nem chat, e não sincroniza com a aplicação modular.
+
+## Código da aplicação modular preservado
+
+As pastas `frontend/` e `backend/` são o código da versão com Firebase, Cloudflare Workers e D1. Foram mantidas para preservar o desenvolvimento original. A presença dessas pastas não significa que os serviços externos estejam configurados.
+
+O envio atual dessa versão está incompleto: não estão na raiz o `package.json`, o lockfile, `shared/`, `docs/`, os testes de navegador e os workflows mencionados abaixo. Esses itens já estavam ausentes antes da limpeza. Portanto, as instruções abaixo exigem o envio do projeto completo para funcionar.
+
+## Limpeza do repositório
+
+Foram removidos somente arquivos gerados: `backend/node_modules/`, `backend/dist-worker/`, `frontend/dist/` e `frontend/dist-subdir/`. O HTML independente já incorpora os recursos que utiliza e não depende dessas pastas. O histórico Git preserva as versões anteriores. O `.gitignore` evita que esses artefatos voltem a ser adicionados por Git; uploads manuais pelo navegador ainda devem ser revisados.
+
+---
+
+## Documentação original da aplicação modular
 
 Aplicação local implementada com frontend estático Vite/JavaScript, Firebase Authentication (somente identidade), API TypeScript em Cloudflare Workers e persistência relacional D1. A seção 18 da especificação é a regra de autorização vigente.
 
