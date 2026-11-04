@@ -1,0 +1,3028 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1677ff">
+<title>Project Monitor</title>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+:root {
+  font-family: Inter, Arial, sans-serif;
+  color: #253247;
+  background: #f6f8fb;
+  font-synthesis: none;
+  --blue: #1677ff;
+  --border: #e2e7ef;
+  --muted: #64748b;
+}
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px #25324722;
+  max-width: 90vw;
+}
+.badge.overdue {
+  background: #fff0e8;
+  color: #a3460b;
+  margin: 6px 0 0 8px;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  outline-offset: 3px;
+}
+a {
+  color: #125fc7;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+button {
+  cursor: pointer;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 15px;
+  background: #fff;
+  color: #334155;
+  font-weight: 500;
+}
+button:hover {
+  background: #eef4fc;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.primary {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.primary:hover {
+  background: #0966e5;
+}
+.danger {
+  background: #bc2437;
+  color: #fff;
+}
+.danger-text {
+  color: #af2034;
+}
+.link {
+  border: 0;
+  padding: 4px;
+  color: #125fc7;
+}
+.muted,
+small {
+  color: var(--muted);
+}
+h1 {
+  font-size: 28px;
+  letter-spacing: -0.7px;
+  margin: 10px 0 12px;
+}
+h2 {
+  font-size: 18px;
+  margin: 0 0 18px;
+}
+h3 {
+  font-size: 14px;
+}
+p {
+  line-height: 1.55;
+}
+input,
+select,
+textarea {
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #253247;
+  max-width: 100%;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #7bb3ff;
+  border-color: var(--blue);
+}
+textarea {
+  resize: vertical;
+  min-height: 95px;
+}
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+.check {
+  flex-direction: row;
+  align-items: center;
+}
+.topbar {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 0 5%;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #263449;
+  font-size: 19px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.logo-small,
+.logo-mark {
+  background: var(--blue);
+  color: white;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+.logo-small {
+  width: 35px;
+  height: 35px;
+  font-size: 13px;
+}
+.logo-mark {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 22px;
+  font-size: 20px;
+}
+.topbar nav {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+}
+.user-menu {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 13px;
+}
+.container {
+  max-width: 1440px;
+  margin: auto;
+  padding: 40px 5% 80px;
+}
+.page-title,
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.section-title {
+  margin: 0 0 24px;
+}
+.section-title h2 {
+  margin: 0;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 1.7px;
+  font-weight: 600;
+  color: #577394;
+  margin: 0;
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0;
+  align-items: center;
+}
+.toolbar input[type="search"] {
+  min-width: 280px;
+  margin-right: auto;
+}
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.project-card,
+.panel,
+.metric {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+}
+.project-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 295px;
+}
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.project-icon {
+  background: #edf4ff;
+  color: var(--blue);
+  font-size: 24px;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+.badge {
+  display: inline-block;
+  border-radius: 5px;
+  background: #edf3fa;
+  color: #355475;
+  padding: 5px 8px;
+  font-size: 11px;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.project-card h2 {
+  margin-bottom: 5px;
+}
+.project-card h2 a {
+  color: #253247;
+}
+.card-description {
+  font-size: 13px;
+  color: var(--muted);
+  min-height: 40px;
+  margin-top: 8px;
+}
+.project-card > .muted {
+  font-size: 12px;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 22px;
+  margin-bottom: 9px;
+}
+progress {
+  height: 6px;
+  width: 100%;
+  accent-color: var(--blue);
+  border: 0;
+}
+progress::-webkit-progress-bar {
+  background: #eaf0f8;
+  border-radius: 6px;
+}
+progress::-webkit-progress-value {
+  background: var(--blue);
+  border-radius: 6px;
+}
+.card-actions {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 24px;
+}
+.card-actions button {
+  padding: 6px 9px;
+  font-size: 12px;
+}
+.notice {
+  padding: 13px 16px;
+  border-radius: 7px;
+  background: #edf4ff;
+  color: #28578f;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 10px 0;
+}
+.notice.error {
+  background: #fff0f0;
+  color: #9c2033;
+}
+.empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--muted);
+  grid-column: 1/-1;
+}
+.empty-symbol {
+  font-size: 38px;
+  color: #91a8c3;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.tabs,
+.subtabs {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid var(--border);
+  margin: 24px 0;
+}
+.tabs a,
+.subtabs a {
+  padding: 14px 0;
+  color: var(--muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.tabs .active,
+.subtabs .active {
+  color: #1266d6;
+  border-bottom: 3px solid var(--blue);
+  font-weight: 600;
+}
+.subtabs {
+  margin-top: 0;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.metric p {
+  font-size: 13px;
+  margin: 0 0 18px;
+}
+.metric strong {
+  font-size: 25px;
+  display: block;
+  margin-bottom: 14px;
+}
+.metric small {
+  font-size: 11px;
+}
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.pending-group {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+  margin-top: 16px;
+}
+.pending-group p,
+.pending-group li {
+  font-size: 13px;
+}
+.table-wrap {
+  overflow: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+th {
+  text-align: left;
+  background: #f7f9fc;
+  color: #50627a;
+  font-weight: 500;
+  white-space: nowrap;
+}
+th,
+td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+td {
+  min-width: 120px;
+  max-width: 350px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+td button {
+  font-size: 12px;
+  padding: 6px 9px;
+}
+dialog {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  width: min(850px, 94vw);
+  max-height: 90vh;
+  color: #253247;
+}
+dialog::backdrop {
+  background: #15253b66;
+}
+.modal-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.modal-title h2 {
+  margin: 0;
+}
+.record-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.wide {
+  grid-column: 1/-1;
+}
+.record-form details {
+  grid-column: 1/-1;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+.record-form details summary {
+  cursor: pointer;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 14px;
+}
+.record-form details label {
+  width: 100%;
+}
+.record-form details textarea {
+  min-height: 100px;
+}
+.login-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: radial-gradient(ellipse at top, #edf4ff, #f8fafc 60%);
+}
+.login-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 40px;
+  width: 440px;
+  max-width: 100%;
+  box-shadow: 0 8px 40px #25324708;
+  text-align: center;
+}
+.login-card h1 {
+  font-size: 27px;
+  margin: 0;
+}
+.login-card > .muted {
+  font-size: 14px;
+  margin: 12px 0 32px;
+}
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: left;
+}
+.password {
+  display: flex;
+  position: relative;
+}
+.password input {
+  width: 100%;
+  padding-right: 80px;
+}
+.password button {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  border: 0;
+  padding: 8px;
+  font-size: 12px;
+}
+.login-card .primary,
+.google {
+  width: 100%;
+  min-height: 43px;
+}
+.google {
+  margin-top: 16px;
+}
+.login-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 26px;
+  font-size: 12px;
+}
+.login-footer {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 28px;
+}
+.account-state {
+  max-width: 650px;
+  margin: 100px auto;
+  padding: 32px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.account-state button {
+  margin: 10px 10px 0 0;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+  margin-top: 22px;
+  font-size: 13px;
+}
+.membership {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.membership strong {
+  width: 100%;
+}
+.cost-totals {
+  padding: 20px;
+  background: #f1f6fc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.chat-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+}
+.conversation-list a {
+  display: block;
+  padding: 16px;
+  background: white;
+  border-bottom: 1px solid var(--border);
+}
+.conversation-list .badge {
+  display: block;
+  width: fit-content;
+  margin-top: 8px;
+}
+.conversation-list .selected {
+  background: #e8f1ff;
+}
+.message-history {
+  max-height: 500px;
+  overflow: auto;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.message {
+  background: #f3f7fc;
+  padding: 14px;
+  border-radius: 8px;
+}
+.message p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+.message-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+.message-meta time {
+  color: var(--muted);
+}
+.conversation textarea {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.conversation form .actions {
+  justify-content: space-between;
+}
+.breadcrumb {
+  font-size: 13px;
+}
+@media (max-width: 1100px) {
+  .project-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .topbar {
+    gap: 16px;
+    padding: 15px 3%;
+    height: auto;
+    flex-wrap: wrap;
+  }
+  .topbar nav {
+    gap: 15px;
+  }
+  .user-menu span {
+    display: none;
+  }
+  .container {
+    padding: 28px 3%;
+  }
+  .metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .project-grid,
+  .overview-grid,
+  .chat-layout,
+  .record-form {
+    grid-template-columns: 1fr;
+  }
+  .metrics {
+    gap: 10px;
+  }
+  .metric {
+    padding: 16px;
+  }
+  .metric strong {
+    font-size: 20px;
+  }
+  .topbar nav {
+    order: 3;
+    width: 100%;
+    overflow: auto;
+  }
+  .tabs {
+    gap: 20px;
+    overflow: auto;
+  }
+  .page-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .toolbar input[type="search"] {
+    min-width: 0;
+    width: 100%;
+  }
+  .wide {
+    grid-column: auto;
+  }
+  .login-card {
+    padding: 28px;
+  }
+  .section-title {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .panel {
+    padding: 18px;
+  }
+  .account-state {
+    margin: 30px 15px;
+  }
+}
+
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import * as FirebaseApp from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+import * as FirebaseAuth from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+import * as ZodPackage from "https://esm.sh/zod@4.1.12";
+
+const CONFIG = Object.freeze({
+  // Configuração pública. Nunca inserir senhas, tokens ou ADMIN_FIREBASE_UID aqui.
+  VITE_FIREBASE_API_KEY: "",
+  VITE_FIREBASE_AUTH_DOMAIN: "",
+  VITE_FIREBASE_PROJECT_ID: "",
+  VITE_FIREBASE_APP_ID: "",
+  // URL HTTPS da API do Cloudflare Worker, sem /api ao final.
+  VITE_API_URL: ""
+});
+const externals = {
+  "@firebase/app": FirebaseApp,
+  "@firebase/auth": FirebaseAuth,
+  "zod": ZodPackage
+};
+const modules = {
+  // frontend/src/main.js
+  "frontend/src/main.js": (out, load) => {
+
+const { auth, observe, logout, verifyEmail } = load("frontend/src/auth/firebase.js");
+const { api, clearRequests } = load("frontend/src/api/client.js");
+const { el, button, note } = load("frontend/src/components/ui.js");
+const { route } = load("frontend/src/router.js");
+const { loginPage } = load("frontend/src/pages/login.js");
+const { projectsPage } = load("frontend/src/pages/projects.js");
+const { projectPage } = load("frontend/src/pages/project.js");
+const { adminPage } = load("frontend/src/pages/admin.js");
+const { messagesPage } = load("frontend/src/pages/chat.js");
+const app = document.querySelector("#app");
+let cleanup = () => {},
+  generation = 0;
+function clear() {
+  generation++;
+  cleanup();
+  cleanup = () => {};
+  clearRequests();
+  for (const d of document.querySelectorAll("dialog")) d.remove();
+  app.replaceChildren();
+}
+async function render() {
+  clear();
+  const run = generation;
+  if (!auth?.currentUser) {
+    app.append(loginPage());
+    return;
+  }
+  app.append(note("Carregando seu espaço de trabalho..."));
+  try {
+    const me = await api("/me");
+    if (run !== generation) return;
+    const header = el(
+      "header",
+      { class: "topbar" },
+      el(
+        "a",
+        { href: "#/projects", class: "brand" },
+        el("span", { class: "logo-small" }, "PM"),
+        "Project Monitor",
+      ),
+      el(
+        "nav",
+        {},
+        el("a", { href: "#/projects" }, "Meus Projetos"),
+        el("a", { href: "#/messages" }, "Mensagens"),
+        me.admin
+          ? el("a", { href: "#/admin/users" }, "Administração de usuários")
+          : null,
+      ),
+      el(
+        "div",
+        { class: "user-menu" },
+        el("span", {}, me.name),
+        button("Sair", async () => {
+          clear();
+          await logout();
+        }),
+      ),
+    );
+    app.replaceChildren(header);
+    if (!me.admin && (me.status !== "ativa" || !me.emailVerified)) {
+      const box = el(
+        "main",
+        { class: "account-state" },
+        el(
+          "h1",
+          {},
+          me.status === "bloqueada"
+            ? "Conta bloqueada"
+            : me.status === "pendente"
+              ? "Aguardando aprovação"
+              : "Verifique seu e-mail",
+        ),
+        el(
+          "p",
+          {},
+          me.status === "bloqueada"
+            ? "Seu acesso à aplicação foi bloqueado. Sua conta Firebase não foi excluída."
+            : me.status === "pendente"
+              ? "Sua conta foi registrada. O administrador precisa aprová-la e conceder acesso aos projetos."
+              : "Confirme o e-mail para acessar os projetos autorizados.",
+        ),
+        !me.emailVerified
+          ? button("Reenviar verificação", async () => {
+              try {
+                await verifyEmail();
+                box.append(note("E-mail de verificação enviado."));
+              } catch {
+                box.append(
+                  note(
+                    "Não foi possível reenviar agora. Aguarde e tente novamente.",
+                    "error",
+                  ),
+                );
+              }
+            })
+          : null,
+        button("Verificar novamente", async () => {
+          await auth.currentUser.reload();
+          await auth.currentUser.getIdToken(true);
+          render();
+        }),
+      );
+      app.append(box);
+      return;
+    }
+    const p = route();
+    let view;
+    if (p[0] === "admin") {
+      view = me.admin
+        ? await adminPage()
+        : note("Acesso exclusivo do administrador.", "error");
+    } else if (p[0] === "messages") {
+      view = await messagesPage(p[1]);
+    } else if (p[0] === "projects" && p[1])
+      view = await projectPage(p[1], p[2], p[3]);
+    else view = await projectsPage(me);
+    if (run !== generation) {
+      view.cleanup?.();
+      return;
+    }
+    cleanup = view.cleanup || (() => {});
+    app.append(view.node || view);
+  } catch (e) {
+    if (run !== generation) return;
+    app.append(
+      note(e.message, "error"),
+      button("Tentar novamente", render),
+      button("Sair", () => logout()),
+    );
+  }
+}
+window.addEventListener("hashchange", render);
+window.addEventListener("refresh-page", render);
+window.addEventListener("access-lost", (e) => {
+  clear();
+  app.append(
+    el(
+      "main",
+      { class: "account-state" },
+      note(e.detail.message, "error"),
+      button("Revalidar acesso", render),
+      button("Sair", () => logout()),
+    ),
+  );
+});
+observe(render).catch(() =>
+  app.replaceChildren(
+    note("Não foi possível iniciar a autenticação.", "error"),
+  ),
+);
+
+
+  },
+
+  // frontend/src/api/client.js
+  "frontend/src/api/client.js": (out, load) => {
+
+const { auth } = load("frontend/src/auth/firebase.js");
+let epoch = 0;
+const controllers = new Set();
+function clearRequests() {
+  epoch++;
+  for (const c of controllers) c.abort();
+  controllers.clear();
+}
+async function api(path, method = "GET", body) {
+  const generation = epoch,
+    c = new AbortController();
+  controllers.add(c);
+  try {
+    if (!auth?.currentUser) throw Error("Autenticação necessária");
+    const token = await auth.currentUser.getIdToken();
+    if (generation !== epoch) throw new DOMException("Cancelado", "AbortError");
+    if (!CONFIG.VITE_API_URL) throw Error('Configure VITE_API_URL no início do index.html');
+    const response = await fetch(
+      `${CONFIG.VITE_API_URL}/api${path}`,
+      {
+        method,
+        headers: {
+          Authorization: `Bearer ${token}`,
+          ...(body ? { "Content-Type": "application/json" } : {}),
+        },
+        body: body ? JSON.stringify(body) : undefined,
+        signal: c.signal,
+      },
+    );
+    const data = await response.json();
+    if (generation !== epoch) throw new DOMException("Cancelado", "AbortError");
+    if (!response.ok) {
+      const error = Object.assign(
+        Error(data.error?.message || "Falha na operação"),
+        { status: response.status },
+      );
+      if ([401, 403, 404].includes(response.status))
+        window.dispatchEvent(new CustomEvent("access-lost", { detail: error }));
+      throw error;
+    }
+    return data.data;
+  } catch (error) {
+    if (error instanceof TypeError)
+      throw Error("Falha de rede. Verifique a conexão e tente novamente.");
+    throw error;
+  } finally {
+    controllers.delete(c);
+  }
+}
+
+out.clearRequests = clearRequests;
+out.api = api;
+  },
+
+  // frontend/src/auth/firebase.js
+  "frontend/src/auth/firebase.js": (out, load) => {
+
+const { initializeApp } = load("@firebase/app");
+const {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  sendEmailVerification,
+  browserLocalPersistence,
+  setPersistence,
+} = load("@firebase/auth");
+const env = CONFIG;
+const configured = !!(
+  env.VITE_FIREBASE_API_KEY &&
+  env.VITE_FIREBASE_AUTH_DOMAIN &&
+  env.VITE_FIREBASE_PROJECT_ID &&
+  env.VITE_FIREBASE_APP_ID
+);
+const auth = configured
+  ? getAuth(
+      initializeApp({
+        apiKey: env.VITE_FIREBASE_API_KEY,
+        authDomain: env.VITE_FIREBASE_AUTH_DOMAIN,
+        projectId: env.VITE_FIREBASE_PROJECT_ID,
+        appId: env.VITE_FIREBASE_APP_ID,
+      }),
+    )
+  : null;
+async function observe(callback) {
+  if (!auth) {
+    callback(null);
+    return;
+  }
+  await setPersistence(auth, browserLocalPersistence);
+  return onAuthStateChanged(auth, callback);
+}
+const login = (email, password) =>
+  signInWithEmailAndPassword(auth, email, password);
+async function register(email, password) {
+  const result = await createUserWithEmailAndPassword(auth, email, password);
+  await sendEmailVerification(result.user);
+  return result;
+}
+const google = () => signInWithPopup(auth, new GoogleAuthProvider());
+const reset = (email) => sendPasswordResetEmail(auth, email);
+const logout = () => signOut(auth);
+const verifyEmail = () => sendEmailVerification(auth.currentUser);
+function authError(err) {
+  const messages = {
+    "auth/invalid-credential": "E-mail ou senha incorretos.",
+    "auth/email-already-in-use": "E-mail já cadastrado.",
+    "auth/weak-password": "Use uma senha de pelo menos seis caracteres.",
+    "auth/popup-closed-by-user": "Login com Google cancelado.",
+    "auth/unauthorized-domain":
+      "Este domínio ainda não está autorizado no Firebase.",
+    "auth/too-many-requests":
+      "Muitas tentativas. Aguarde antes de tentar novamente.",
+    "auth/network-request-failed": "Falha de conexão. Verifique sua rede.",
+  };
+  return (
+    messages[err.code] ||
+    "Não foi possível autenticar. Verifique os dados e a configuração do Firebase."
+  );
+}
+
+out.configured = configured;
+out.auth = auth;
+out.observe = observe;
+out.login = login;
+out.register = register;
+out.google = google;
+out.reset = reset;
+out.logout = logout;
+out.verifyEmail = verifyEmail;
+out.authError = authError;
+  },
+
+  // frontend/src/components/forms.js
+  "frontend/src/components/forms.js": (out, load) => {
+
+const { models, schemaFor } = load("shared/models.js");
+const { el, button, note, modal } = load("frontend/src/components/ui.js");
+const { cents } = load("frontend/src/utils/format.js");
+function recordForm(resource, record = {}, phases = [], save) {
+  const fields = models[resource].fields,
+    form = el("form", { class: "record-form" }),
+    error = el("div", { "aria-live": "polite" });
+  const inputs = {};
+  for (const [key, [label, schema, type]] of Object.entries(fields)) {
+    let input;
+    const id = `f-${crypto.randomUUID()}`;
+    if (Array.isArray(type) || type === "phase") {
+      const values =
+        type === "phase"
+          ? [["", "Sem fase"], ...phases.map((p) => [p.id, p.title])]
+          : type.map((v) => [v, v]);
+      input = el(
+        "select",
+        { id, name: key },
+        values.map(([v, l]) => el("option", { value: v }, l)),
+      );
+    } else
+      input = el(type === "textarea" ? "textarea" : "input", {
+        id,
+        name: key,
+        type: type === "money" ? "text" : type || "text",
+        ...(type === "money" ? { inputmode: "decimal" } : {}),
+        ...(type === "number" ? { min: 0, step: 1 } : {}),
+        maxlength: 10000,
+      });
+    if (record[key] !== undefined && record[key] !== null)
+      input.value =
+        type === "money"
+          ? (record[key] / 100).toFixed(2).replace(".", ",")
+          : record[key];
+    else if (type === "money" || type === "number") input.value = "0";
+    input.required = !schema.safeParse(undefined).success;
+    input.setAttribute("aria-label", label + (input.required ? " *" : ""));
+    inputs[key] = input;
+    const wrapper = el(
+      "label",
+      { for: id, class: type === "textarea" ? "wide" : "" },
+      label + (input.required ? " *" : ""),
+      input,
+    );
+    if (resource === "charter") {
+      const group = el(
+        "details",
+        { open: true },
+        el("summary", {}, label),
+        wrapper,
+      );
+      form.append(group);
+    } else form.append(wrapper);
+  }
+  const submit = el("button", { type: "submit", class: "primary" }, "Salvar"),
+    cancel = button("Cancelar", () => {
+      const dialog = form.closest("dialog");
+      if (dialog) dialog.close();
+      else window.dispatchEvent(new Event("refresh-page"));
+    });
+  form.append(
+    el(
+      "div",
+      { class: "wide" },
+      error,
+      el("div", { class: "actions" }, cancel, submit),
+    ),
+  );
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    error.replaceChildren();
+    submit.disabled = true;
+    try {
+      const data = {};
+      for (const [key, [, , type]] of Object.entries(fields)) {
+        const value = inputs[key].value;
+        data[key] =
+          type === "money"
+            ? cents(value)
+            : type === "number"
+              ? Number(value)
+              : value;
+      }
+      const parsed = schemaFor(resource).parse(data);
+      await save(parsed);
+      const success = note("Registro salvo com sucesso.");
+      success.classList.add("toast");
+      document.body.append(success);
+      setTimeout(() => success.remove(), 4000);
+    } catch (err) {
+      error.replaceChildren(
+        note(
+          err.issues
+            ? err.issues.map((i) => i.message).join("; ")
+            : err.message,
+          "error",
+        ),
+      );
+    } finally {
+      submit.disabled = false;
+    }
+  });
+  return form;
+}
+function editDialog(resource, record, phases, onSave) {
+  let d;
+  d = modal(
+    record?.id ? "Editar registro" : `Cadastrar — ${models[resource].label}`,
+    recordForm(resource, record, phases, async (data) => {
+      await onSave(data);
+      d.close();
+    }),
+  );
+  return d;
+}
+
+out.recordForm = recordForm;
+out.editDialog = editDialog;
+  },
+
+  // frontend/src/components/ui.js
+  "frontend/src/components/ui.js": (out, load) => {
+function el(tag, attrs = {}, ...children) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k.startsWith("on")) n.addEventListener(k.slice(2).toLowerCase(), v);
+    else if (k === "class") n.className = v;
+    else if (k === "text") n.textContent = v;
+    else if (v !== undefined && v !== null && v !== false)
+      n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of children.flat(Infinity)) {
+    if (c !== null && c !== undefined)
+      n.append(c instanceof Node ? c : document.createTextNode(String(c)));
+  }
+  return n;
+}
+const button = (label, fn, cls = "secondary") =>
+  el("button", { type: "button", class: cls, onClick: fn }, label);
+const note = (message, kind = "info") =>
+  el(
+    "div",
+    { class: `notice ${kind}`, role: kind === "error" ? "alert" : "status" },
+    message,
+  );
+function empty(message = "Nenhum registro cadastrado.") {
+  return el(
+    "div",
+    { class: "empty" },
+    el("span", { class: "empty-symbol", "aria-hidden": "true" }, "◇"),
+    el("p", {}, message),
+  );
+}
+function table(headers, rows) {
+  return el(
+    "div",
+    { class: "table-wrap" },
+    el(
+      "table",
+      {},
+      el(
+        "thead",
+        {},
+        el(
+          "tr",
+          {},
+          headers.map((h) => el("th", { scope: "col" }, h)),
+        ),
+      ),
+      el(
+        "tbody",
+        {},
+        rows.map((row) =>
+          el(
+            "tr",
+            {},
+            row.map((c) => el("td", {}, c)),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+function modal(title, content) {
+  const d = el(
+    "dialog",
+    {},
+    el(
+      "div",
+      { class: "modal-title" },
+      el("h2", {}, title),
+      button("Fechar", () => d.close()),
+    ),
+    content,
+  );
+  d.addEventListener("close", () => d.remove());
+  document.body.append(d);
+  d.showModal();
+  return d;
+}
+async function confirmAction(message) {
+  return new Promise((resolve) => {
+    const d = modal(
+      "Confirmar operação",
+      el(
+        "div",
+        {},
+        el("p", {}, message),
+        el(
+          "div",
+          { class: "actions" },
+          button("Cancelar", () => {
+            resolve(false);
+            d.close();
+          }),
+          button(
+            "Confirmar",
+            () => {
+              resolve(true);
+              d.close();
+            },
+            "danger",
+          ),
+        ),
+      ),
+    );
+    d.addEventListener("cancel", () => resolve(false));
+    d.addEventListener("close", () => resolve(false));
+  });
+}
+async function busy(btn, task) {
+  btn.disabled = true;
+  try {
+    await task();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+out.el = el;
+out.button = button;
+out.note = note;
+out.empty = empty;
+out.table = table;
+out.modal = modal;
+out.confirmAction = confirmAction;
+out.busy = busy;
+  },
+
+  // frontend/src/pages/admin.js
+  "frontend/src/pages/admin.js": (out, load) => {
+
+const { api } = load("frontend/src/api/client.js");
+const {
+  el,
+  button,
+  note,
+  table,
+  modal,
+  confirmAction,
+} = load("frontend/src/components/ui.js");
+const { time } = load("frontend/src/utils/format.js");
+async function adminPage() {
+  const root = el(
+      "main",
+      { class: "container" },
+      el("h1", {}, "Administração de usuários"),
+      note(
+        "Aprovação não concede projetos. Bloqueio revoga vínculos e não exclui a conta Firebase. Leitores podem participar do chat.",
+      ),
+    ),
+    body = el("section", { class: "panel" }),
+    error = el("div"),
+    search = el("input", {
+      type: "search",
+      placeholder: "Nome ou e-mail",
+      "aria-label": "Buscar usuários",
+    }),
+    filter = el(
+      "select",
+      { "aria-label": "Situação" },
+      ["", "pendente", "ativa", "bloqueada"].map((v) =>
+        el("option", { value: v }, v || "Todas as situações"),
+      ),
+    );
+  let page = 1;
+  async function guarded(fn) {
+    try {
+      await fn();
+    } catch (e) {
+      error.replaceChildren(note(e.message, "error"));
+    }
+  }
+  async function load() {
+    const data = await api(
+      `/admin/users?q=${encodeURIComponent(search.value)}&status=${filter.value}&page=${page}`,
+    );
+    body.replaceChildren(
+      table(
+        [
+          "Usuário",
+          "Situação",
+          "Cadastro / último acesso",
+          "Projetos",
+          "Ações",
+        ],
+        data.items.map((u) => [
+          el(
+            "div",
+            {},
+            el("strong", {}, u.name),
+            el("p", {}, u.email),
+            el("details", {}, el("summary", {}, "UID Firebase"), u.uid),
+          ),
+          u.is_admin ? "Administrador global" : u.status,
+          el("div", {}, time(u.created_at), el("br"), time(u.last_seen_at)),
+          u.memberships
+            .filter((m) => m.status === "ativo")
+            .map((m) => `${m.name} (${m.role})`)
+            .join(", ") || "Nenhum",
+          u.is_admin
+            ? el(
+                "span",
+                { class: "muted" },
+                "Acesso global por configuração protegida",
+              )
+            : el(
+                "div",
+                { class: "actions" },
+                ...["ativa", "pendente", "bloqueada"]
+                  .filter((s) => s !== u.status)
+                  .map((s) =>
+                    button(
+                      s === "ativa"
+                        ? "Aprovar / reativar"
+                        : s === "pendente"
+                          ? "Manter pendente"
+                          : "Bloquear",
+                      () =>
+                        guarded(async () => {
+                          if (
+                            s !== "ativa" &&
+                            !(await confirmAction(
+                              "Esta alteração impedirá acesso e revogará todos os vínculos. A conta Firebase será preservada. Continuar?",
+                            ))
+                          )
+                            return;
+                          await api(
+                            `/admin/users/${encodeURIComponent(u.uid)}/status`,
+                            "PATCH",
+                            { status: s, version: u.version },
+                          );
+                          await load();
+                        }),
+                    ),
+                  ),
+                button("Acessos", () => guarded(() => membershipDialog(u))),
+              ),
+        ]),
+      ),
+      el(
+        "div",
+        { class: "pagination" },
+        button("Anterior", () => {
+          if (page > 1) {
+            page--;
+            guarded(load);
+          }
+        }),
+        `Página ${page} · ${data.total} usuários`,
+        button("Próxima", () => {
+          if (page * 20 < data.total) {
+            page++;
+            guarded(load);
+          }
+        }),
+      ),
+    );
+  }
+  async function membershipDialog(u) {
+    const projects = [
+        ...(await api("/projects")),
+        ...(await api("/projects?archived=true")),
+      ],
+      feedback = el("div"),
+      list = el("div");
+    const d = modal(
+      `Acessos — ${u.name}`,
+      el(
+        "div",
+        {},
+        note(
+          "Novos membros podem ler todo o histórico do chat coletivo. Gestores exportam e excluem registros; colaboradores editam; leitores consultam e conversam.",
+        ),
+        feedback,
+        list,
+      ),
+    );
+    async function show() {
+      list.replaceChildren();
+      for (const p of projects) {
+        const members = await api(`/admin/projects/${p.id}/members`),
+          m = members.find((m) => m.uid === u.uid),
+          role = el(
+            "select",
+            { "aria-label": `Perfil em ${p.name}` },
+            ["gestor", "colaborador", "leitor"].map((v) => el("option", {}, v)),
+          );
+        role.value = m?.role || "leitor";
+        const action = async (fn) => {
+          try {
+            await fn();
+            await show();
+            await load();
+          } catch (e) {
+            feedback.replaceChildren(note(e.message, "error"));
+          }
+        };
+        list.append(
+          el(
+            "div",
+            { class: "membership" },
+            el("strong", {}, p.name),
+            el("span", {}, m?.status || "Sem acesso"),
+            role,
+            button("Conceder / alterar", () =>
+              action(() =>
+                api(
+                  `/admin/projects/${p.id}/members/${encodeURIComponent(u.uid)}`,
+                  "PUT",
+                  { role: role.value, version: m?.version || 0 },
+                ),
+              ),
+            ),
+            m?.status === "ativo"
+              ? button(
+                  "Revogar",
+                  () =>
+                    action(async () => {
+                      if (
+                        await confirmAction(
+                          "Revogar acesso ao projeto e ao chat coletivo? Conversas diretas dependem dos vínculos restantes.",
+                        )
+                      )
+                        await api(
+                          `/admin/projects/${p.id}/members/${encodeURIComponent(u.uid)}`,
+                          "DELETE",
+                          { version: m.version },
+                        );
+                    }),
+                  "danger-text",
+                )
+              : null,
+          ),
+        );
+      }
+    }
+    await show();
+    return d;
+  }
+  const audit = async () => {
+    let auditPage = 1;
+    const list = el("div");
+    const d = modal("Auditoria administrativa", list);
+    async function render() {
+      const data = await api(`/admin/audit-logs?page=${auditPage}`);
+      list.replaceChildren(
+        table(
+          ["Horário", "Ator", "Ação", "Alvo / projeto", "Alteração"],
+          data.items.map((r) => [
+            time(r.created_at),
+            r.actor_uid,
+            r.action,
+            `${r.target_uid || ""} ${r.project_id || ""}`,
+            r.details,
+          ]),
+        ),
+        el(
+          "div",
+          { class: "pagination" },
+          button("Anterior", () => {
+            if (auditPage > 1) {
+              auditPage--;
+              guarded(render);
+            }
+          }),
+          `Página ${auditPage}`,
+          button("Próxima", () => {
+            if (data.items.length === 20) {
+              auditPage++;
+              guarded(render);
+            }
+          }),
+        ),
+      );
+    }
+    await render();
+    return d;
+  };
+  root.append(
+    el(
+      "form",
+      {
+        class: "toolbar",
+        onSubmit: (e) => {
+          e.preventDefault();
+          page = 1;
+          guarded(load);
+        },
+      },
+      search,
+      filter,
+      el("button", { type: "submit", class: "primary" }, "Buscar"),
+      button("Consultar auditoria", () => guarded(audit)),
+    ),
+    error,
+    body,
+  );
+  await load();
+  return root;
+}
+
+out.adminPage = adminPage;
+  },
+
+  // frontend/src/pages/chat.js
+  "frontend/src/pages/chat.js": (out, load) => {
+
+const { api } = load("frontend/src/api/client.js");
+const { el, button, note, empty } = load("frontend/src/components/ui.js");
+const { time } = load("frontend/src/utils/format.js");
+const { pollVisible } = load("frontend/src/utils/polling.js");
+async function conversationView(id, onRead = async () => {}) {
+  const history = el("div", {
+      class: "message-history",
+      "aria-live": "polite",
+    }),
+    status = el("div"),
+    text = el("textarea", {
+      maxlength: 2000,
+      required: true,
+      rows: 3,
+      "aria-label": "Sua mensagem",
+      placeholder: "Escreva uma mensagem...",
+    }),
+    send = el("button", { type: "submit", class: "primary" }, "Enviar"),
+    older = button("Carregar mensagens anteriores", () => loadOlder()),
+    node = el("div", { class: "conversation" }, older, history, status);
+  let stopped = false,
+    busy = false,
+    timer = null,
+    delay = 5000,
+    first = 0,
+    last = 0,
+    hasOlder = false,
+    pendingMessage = null,
+    sending = false;
+  const messages = new Map();
+  function draw() {
+    history.replaceChildren(
+      ...[...messages.values()]
+        .sort((a, b) => a.seq - b.seq)
+        .map((m) =>
+          el(
+            "article",
+            { class: "message" },
+            el(
+              "div",
+              { class: "message-meta" },
+              el("strong", {}, m.author_name || "Você"),
+              el("time", { datetime: m.created_at }, time(m.created_at)),
+            ),
+            el("p", {}, m.text),
+          ),
+        ),
+    );
+    older.hidden = !hasOlder;
+  }
+  async function receive(params = "") {
+    const data = await api(`/conversations/${id}/messages${params}`);
+    if (stopped) return null;
+    for (const m of data.items) messages.set(m.seq, m);
+    if (data.items.length) {
+      first = Math.min(first || Infinity, data.items[0].seq);
+      last = Math.max(last, data.items.at(-1).seq);
+    }
+    draw();
+    return data;
+  }
+  async function mark() {
+    if (stopped || document.hidden) return;
+    const m = messages.get(last);
+    if (m) await api(`/conversations/${id}/read`, "PUT", { message_id: m.id });
+    if (!stopped) await onRead();
+  }
+  async function loadOlder() {
+    if (busy || stopped) return;
+    busy = true;
+    try {
+      const d = await receive(`?before=${first}`);
+      if (d) {
+        hasOlder = d.has_more;
+        draw();
+      }
+    } catch (e) {
+      status.replaceChildren(note(e.message, "error"));
+    } finally {
+      busy = false;
+    }
+  }
+  async function poll() {
+    clearTimeout(timer);
+    if (stopped) return;
+    if (document.hidden || busy) {
+      timer = setTimeout(poll, delay);
+      return;
+    }
+    busy = true;
+    try {
+      let more = true;
+      while (more && !stopped) {
+        const d = await receive(`?after=${last}`);
+        more = !!d?.has_more;
+      }
+      await mark();
+      delay = 5000;
+    } catch (e) {
+      if ([401, 403, 404].includes(e.status)) {
+        cleanup();
+        node.replaceChildren(note(e.message, "error"));
+        return;
+      }
+      delay = Math.min(delay * 2, 60000);
+      status.replaceChildren(
+        note(
+          "Falha ao atualizar. Nova tentativa automática em instantes.",
+          "error",
+        ),
+      );
+    } finally {
+      busy = false;
+      if (!stopped) timer = setTimeout(poll, delay);
+    }
+  }
+  async function sendMessage(pending) {
+    if (sending || stopped) return;
+    sending = true;
+    pendingMessage = pending;
+    text.readOnly = true;
+    send.disabled = true;
+    status.replaceChildren(note("Enviando..."));
+    try {
+      await api(`/conversations/${id}/messages`, "POST", pending);
+      if (stopped) return;
+      text.value = "";
+      pendingMessage = null;
+      text.readOnly = false;
+      send.textContent = "Enviar";
+      status.replaceChildren(note("Mensagem enviada."));
+      await poll();
+    } catch (e) {
+      if (!stopped)
+        status.replaceChildren(
+          note(e.message, "error"),
+          button("Tentar novamente", () => sendMessage(pending)),
+        );
+    } finally {
+      sending = false;
+      send.disabled = false;
+      if (pendingMessage) send.textContent = "Tentar envio novamente";
+    }
+  }
+  const form = el(
+    "form",
+    {
+      onSubmit: (e) => {
+        e.preventDefault();
+        const value = text.value.trim();
+        if (value)
+          sendMessage(
+            pendingMessage || { text: value, client_id: crypto.randomUUID() },
+          );
+      },
+    },
+    text,
+    el(
+      "div",
+      { class: "actions" },
+      el(
+        "small",
+        { class: "muted" },
+        "Até 2.000 caracteres · atualização a cada 5 segundos",
+      ),
+      send,
+    ),
+  );
+  node.append(form);
+  const visible = () => {
+    if (!document.hidden) poll();
+  };
+  function cleanup() {
+    stopped = true;
+    clearTimeout(timer);
+    document.removeEventListener("visibilitychange", visible);
+    messages.clear();
+    pendingMessage = null;
+    history.replaceChildren();
+    text.value = "";
+    status.replaceChildren();
+  }
+  try {
+    const initial = await receive();
+    hasOlder = !!initial?.has_more;
+    draw();
+    await mark();
+    document.addEventListener("visibilitychange", visible);
+    timer = setTimeout(poll, 5000);
+  } catch (e) {
+    cleanup();
+    throw e;
+  }
+  return { node, cleanup };
+}
+async function messagesPage(selected) {
+  const root = el(
+      "main",
+      { class: "container" },
+      el("h1", {}, "Mensagens"),
+      note(
+        "Conversas diretas são acessíveis somente aos dois participantes enquanto elegíveis. O administrador não recebe acesso às conversas de outras pessoas. Não há criptografia de ponta a ponta.",
+      ),
+    ),
+    list = el("aside", { class: "conversation-list" }),
+    panel = el("section", { class: "panel" }),
+    recipients = await api("/chat/eligible-users"),
+    conversations = (await api("/conversations")).filter(
+      (c) => c.type === "direct",
+    ),
+    select = el(
+      "select",
+      { "aria-label": "Destinatário" },
+      el("option", { value: "" }, "Selecione um destinatário"),
+      recipients.map((r) =>
+        el(
+          "option",
+          { value: r.public_id },
+          `${r.name} · ${r.public_id.slice(0, 8)}`,
+        ),
+      ),
+    ),
+    error = el("div");
+  let cleanup = () => {},
+    disposed = false;
+  root.append(
+    el(
+      "div",
+      { class: "toolbar" },
+      select,
+      button(
+        "Iniciar conversa",
+        async () => {
+          if (!select.value) return;
+          try {
+            const c = await api("/conversations/direct", "POST", {
+              recipient_public_id: select.value,
+            });
+            location.hash = `#/messages/${c.id}`;
+          } catch (e) {
+            error.replaceChildren(note(e.message, "error"));
+          }
+        },
+        "primary",
+      ),
+    ),
+    error,
+    el("div", { class: "chat-layout" }, list, panel),
+  );
+  function drawList(rows) {
+    if (disposed) return;
+    list.replaceChildren(
+      ...rows.map((c) =>
+        el(
+          "a",
+          {
+            href: `#/messages/${c.id}`,
+            class: c.id === selected ? "selected" : "",
+          },
+          c.title,
+          el("span", { class: "badge" }, `${c.unread} não lidas`),
+        ),
+      ),
+    );
+    if (!rows.length) list.append(empty("Nenhuma conversa direta."));
+  }
+  async function refreshList() {
+    const rows = await api("/conversations");
+    drawList(rows.filter((c) => c.type === "direct"));
+  }
+  drawList(conversations);
+  if (selected) {
+    const view = await conversationView(selected, refreshList);
+    panel.append(view.node);
+    cleanup = view.cleanup;
+  } else {
+    panel.append(empty("Selecione uma conversa ou inicie uma nova."));
+    cleanup = pollVisible(refreshList, (e) =>
+      error.replaceChildren(note(e.message, "error")),
+    );
+  }
+  return {
+    node: root,
+    cleanup: () => {
+      disposed = true;
+      cleanup();
+      list.replaceChildren();
+    },
+  };
+}
+
+out.conversationView = conversationView;
+out.messagesPage = messagesPage;
+  },
+
+  // frontend/src/pages/login.js
+  "frontend/src/pages/login.js": (out, load) => {
+
+const { el, button, note } = load("frontend/src/components/ui.js");
+const {
+  configured,
+  login,
+  register,
+  reset,
+  google,
+  authError,
+} = load("frontend/src/auth/firebase.js");
+function loginPage() {
+  const message = el("div", { "aria-live": "polite" }),
+    email = el("input", {
+      type: "email",
+      id: "email",
+      autocomplete: "email",
+      required: true,
+    }),
+    password = el("input", {
+      type: "password",
+      id: "password",
+      "aria-label": "Senha",
+      autocomplete: "current-password",
+      required: true,
+      minlength: 6,
+    });
+  let mode = "login";
+  const submit = el("button", { type: "submit", class: "primary" }, "Entrar");
+  const action = async (fn) => {
+    submit.disabled = true;
+    message.replaceChildren();
+    try {
+      await fn();
+    } catch (e) {
+      message.replaceChildren(note(authError(e), "error"));
+    } finally {
+      submit.disabled = false;
+    }
+  };
+  const form = el(
+    "form",
+    {
+      onSubmit: (e) => {
+        e.preventDefault();
+        action(() =>
+          mode === "register"
+            ? register(email.value, password.value)
+            : login(email.value, password.value),
+        );
+      },
+    },
+    el("label", { for: "email" }, "E-mail", email),
+    el(
+      "label",
+      { for: "password" },
+      "Senha",
+      el(
+        "div",
+        { class: "password" },
+        password,
+        button("Mostrar", (e) => {
+          const visible = password.type === "password";
+          password.type = visible ? "text" : "password";
+          e.currentTarget.textContent = visible ? "Ocultar" : "Mostrar";
+        }),
+      ),
+    ),
+    message,
+    submit,
+  );
+  const card = el(
+    "section",
+    { class: "login-card" },
+    el("div", { class: "logo-mark" }, "PM"),
+    el("h1", {}, "Project Monitor"),
+    el("p", { class: "muted" }, "Acompanhamento e gestão de projetos"),
+    configured
+      ? null
+      : note(
+          "Configuração pendente: preencha frontend/.env.local com os dados públicos do Firebase. Nenhum dado simulado está ativo.",
+        ),
+    form,
+    button("Entrar com Google", () => action(google), "google"),
+    el(
+      "div",
+      { class: "login-links" },
+      button(
+        "Esqueci minha senha",
+        () => {
+          if (!email.reportValidity()) return;
+          action(async () => {
+            await reset(email.value);
+            message.replaceChildren(
+              note(
+                "Se houver uma conta para este e-mail, você receberá as instruções de recuperação.",
+              ),
+            );
+          });
+        },
+        "link",
+      ),
+      button(
+        "Criar conta",
+        (e) => {
+          mode = mode === "login" ? "register" : "login";
+          submit.textContent = mode === "login" ? "Entrar" : "Criar conta";
+          password.autocomplete =
+            mode === "login" ? "current-password" : "new-password";
+          e.currentTarget.textContent =
+            mode === "login" ? "Criar conta" : "Já tenho conta";
+        },
+        "link",
+      ),
+    ),
+  );
+  if (!configured)
+    for (const control of card.querySelectorAll("input,button"))
+      control.disabled = true;
+  return el(
+    "main",
+    { class: "login-layout" },
+    card,
+    el(
+      "p",
+      { class: "login-footer" },
+      "Planeje com clareza. Acompanhe com confiança.",
+    ),
+  );
+}
+
+out.loginPage = loginPage;
+  },
+
+  // frontend/src/pages/project.js
+  "frontend/src/pages/project.js": (out, load) => {
+
+const { api } = load("frontend/src/api/client.js");
+const {
+  el,
+  button,
+  note,
+  empty,
+  table,
+  confirmAction,
+} = load("frontend/src/components/ui.js");
+const { editDialog, recordForm } = load("frontend/src/components/forms.js");
+const { models, riskPriority, taskStatuses } = load("shared/models.js");
+const { date, brl } = load("frontend/src/utils/format.js");
+const { csv, charterTxt, projectJson, download } = load("frontend/src/exports/index.js");
+const { conversationView } = load("frontend/src/pages/chat.js");
+async function projectPage(id, tab = "overview", sub = "risks") {
+  const p = await api(`/projects/${id}`),
+    base = `/projects/${id}`,
+    projectChat = await api(`${base}/chat`),
+    root = el("main", { class: "container" }),
+    content = el("section", { class: "panel" });
+  let cleanup = () => {};
+  const canWrite =
+      ["admin", "gestor", "colaborador"].includes(p.role) && !p.archived_at,
+    canDelete = ["admin", "gestor"].includes(p.role) && !p.archived_at,
+    canExport = ["admin", "gestor"].includes(p.role);
+  const exportAll = async () => {
+    try {
+      const data = await api(`${base}/export`);
+      download(
+        "projeto.json",
+        projectJson(data),
+        "application/json;charset=utf-8",
+      );
+    } catch (e) {
+      content.prepend(note(e.message, "error"));
+    }
+  };
+  root.append(
+    el("a", { class: "breadcrumb", href: "#/projects" }, "Meus Projetos /"),
+    el(
+      "div",
+      { class: "page-title" },
+      el(
+        "div",
+        {},
+        el("h1", {}, p.name),
+        el("span", { class: "badge" }, p.status),
+        p.archived_at ? el("span", { class: "badge" }, "Arquivado") : null,
+      ),
+      el(
+        "div",
+        { class: "actions" },
+        canExport ? button("Exportar JSON", exportAll) : null,
+        ["admin", "gestor"].includes(p.role) && !p.archived_at
+          ? button("Editar projeto", () =>
+              editDialog("projects", p, [], async (data) => {
+                await api(base, "PATCH", { ...data, version: p.version });
+                window.dispatchEvent(new Event("refresh-page"));
+              }),
+            )
+          : null,
+      ),
+    ),
+    el(
+      "nav",
+      { class: "tabs", "aria-label": "Áreas do projeto" },
+      [
+        ["overview", "Visão Geral"],
+        ["charter", "TAP e Escopo"],
+        ["tasks", "Cronograma"],
+        ["control", "Gestão e Controle"],
+        ["documents", "Documentos"],
+        ["chat", "Chat"],
+      ].map(([key, label]) =>
+        el(
+          "a",
+          {
+            href: `#/projects/${id}/${key}`,
+            class: tab === key ? "active" : "",
+          },
+          label,
+          key === "chat" && projectChat.unread > 0
+            ? el(
+                "span",
+                { class: "badge", "data-chat-unread": true },
+                `${projectChat.unread} não lidas`,
+              )
+            : null,
+        ),
+      ),
+    ),
+    ...(p.archived_at
+      ? [
+          note(
+            "Projeto arquivado. Dados preservados; restauração disponível para o administrador.",
+          ),
+        ]
+      : []),
+    content,
+  );
+  if (tab === "overview") {
+    const s = await api(`${base}/summary`);
+    content.className = "overview";
+    content.append(
+      el(
+        "div",
+        { class: "metrics" },
+        [
+          [
+            "Progresso",
+            s.progress === null ? "Não calculado" : `${s.progress}%`,
+            "Atividades concluídas / não canceladas",
+          ],
+          ["Prazo", date(s.deadline), "Término previsto no cadastro"],
+          [
+            "Custo",
+            brl(s.actual_cents),
+            `Orçamento vigente: ${brl(s.budget_cents)}`,
+          ],
+          ["Situação", s.status, "Informada pela gestão"],
+        ].map(([title, value, caption]) =>
+          el(
+            "article",
+            { class: "metric" },
+            el("p", { class: "muted" }, title),
+            el("strong", {}, value),
+            el("small", {}, caption),
+          ),
+        ),
+      ),
+      el(
+        "div",
+        { class: "overview-grid" },
+        el(
+          "section",
+          { class: "panel" },
+          el("h2", {}, "Próximos marcos"),
+          s.milestones.length
+            ? table(
+                ["Marco", "Data", "Situação"],
+                s.milestones.map((t) => [t.title, date(t.end_date), t.status]),
+              )
+            : empty("Nenhum marco pendente."),
+        ),
+        el(
+          "section",
+          { class: "panel" },
+          el("h2", {}, "Pendências"),
+          el(
+            "p",
+            { class: "muted" },
+            `Data de referência: ${date(s.today)} · próximos 7 dias`,
+          ),
+          ...[
+            ["Atividades atrasadas", s.overdue],
+            ["Próximas do vencimento", s.due_soon],
+            ["Riscos de alta prioridade", s.high_risks],
+          ].map(([label, items]) =>
+            el(
+              "div",
+              { class: "pending-group" },
+              el("h3", {}, `${label} (${items.length})`),
+              items.length
+                ? el(
+                    "ul",
+                    {},
+                    items.map((i) => el("li", {}, i.title || i.description)),
+                  )
+                : el("p", { class: "muted" }, "Nenhuma pendência."),
+            ),
+          ),
+        ),
+      ),
+    );
+  } else if (tab === "charter") {
+    const c = await api(`${base}/charter`);
+    content.append(
+      el(
+        "div",
+        { class: "section-title" },
+        el("h2", {}, "Termo de Abertura do Projeto"),
+        canExport
+          ? button("Exportar TXT", async () => {
+              const d = await api(`${base}/export`);
+              download(
+                "tap.txt",
+                charterTxt(d.project, d.charter),
+                "text/plain;charset=utf-8",
+              );
+            })
+          : null,
+      ),
+      note(
+        "Datas e orçamento deste TAP são referências iniciais independentes. Os indicadores usam o cadastro do projeto.",
+      ),
+    );
+    const form = recordForm("charter", c || {}, [], async (data) => {
+      const saved = await api(`${base}/charter`, "PUT", {
+        ...data,
+        version: c?.version || 0,
+      });
+      Object.assign(c || {}, saved);
+      window.dispatchEvent(new Event("refresh-page"));
+    });
+    if (!canWrite)
+      for (const control of form.querySelectorAll(
+        "input,textarea,select,button",
+      ))
+        control.disabled = true;
+    content.append(form);
+  } else if (tab === "chat") {
+    const c = projectChat;
+    content.append(
+      note(
+        "O administrador tem acesso ao chat do projeto. Novos membros podem consultar o histórico. Mensagens ficam armazenadas no backend, sem criptografia de ponta a ponta.",
+      ),
+    );
+    const view = await conversationView(c.id, async () =>
+      root.querySelector("[data-chat-unread]")?.remove(),
+    );
+    content.append(view.node);
+    cleanup = view.cleanup;
+  } else {
+    let resource =
+      tab === "control"
+        ? ["risks", "costs", "quality", "stakeholders"].includes(sub)
+          ? sub
+          : "risks"
+        : tab === "tasks"
+          ? "tasks"
+          : "documents";
+    if (tab === "control")
+      content.append(
+        el(
+          "nav",
+          { class: "subtabs" },
+          ["risks", "costs", "quality", "stakeholders"].map((k) =>
+            el(
+              "a",
+              {
+                href: `#/projects/${id}/control/${k}`,
+                class: k === resource ? "active" : "",
+              },
+              models[k].label,
+            ),
+          ),
+        ),
+      );
+    const body = el("div");
+    content.append(body);
+    async function showResource(res) {
+      try {
+        await renderResource(res);
+      } catch (error) {
+        body.replaceChildren(
+          note(error.message, "error"),
+          button("Tentar novamente", () => showResource(res)),
+        );
+      }
+    }
+    async function renderResource(res) {
+      body.replaceChildren(note("Carregando registros..."));
+      const rows = await api(`${base}/${res}`),
+        phases = res === "tasks" ? await api(`${base}/phases`) : [],
+        today = res === "tasks" ? (await api(`${base}/summary`)).today : null,
+        result = el("div"),
+        error = el("div"),
+        listing = el("div"),
+        selects = [];
+      const refresh = async () => {
+        try {
+          await renderResource(res);
+        } catch (e) {
+          body.replaceChildren(
+            note(e.message, "error"),
+            button("Tentar novamente", () => showResource(res)),
+          );
+        }
+      };
+      const add = () =>
+        editDialog(res, {}, phases, async (data) => {
+          await api(`${base}/${res}`, "POST", data);
+          await refresh();
+        });
+      result.append(
+        el(
+          "div",
+          { class: "section-title" },
+          el("h2", {}, models[res].label),
+          el(
+            "div",
+            { class: "actions" },
+            res === "tasks"
+              ? button("Gerenciar fases", () => showResource("phases"))
+              : res === "phases"
+                ? button("Voltar às atividades", () => showResource("tasks"))
+                : null,
+            canExport && res !== "documents" && res !== "phases"
+              ? button("Exportar CSV", async () => {
+                  try {
+                    const d = await api(`${base}/export`);
+                    download(
+                      `${res}.csv`,
+                      csv(res, d[res]),
+                      "text/csv;charset=utf-8",
+                    );
+                  } catch (e) {
+                    error.replaceChildren(note(e.message, "error"));
+                  }
+                })
+              : null,
+            canWrite ? button("+ Adicionar", add, "primary") : null,
+          ),
+        ),
+        error,
+      );
+      if (res === "risks")
+        result.append(
+          note(
+            "Matriz: probabilidade × impacto (1 a 3). Baixa: 1–2; média: 3–4; alta: 6–9.",
+          ),
+        );
+      if (res === "documents")
+        result.append(
+          note(
+            "Referências externas: o arquivo não é enviado nem armazenado na aplicação.",
+          ),
+        );
+      if (res === "costs") {
+        const planned = rows.reduce((s, r) => s + r.planned_cents, 0),
+          actual = rows.reduce((s, r) => s + r.actual_cents, 0);
+        result.append(
+          el(
+            "div",
+            { class: "cost-totals" },
+            `Previsto detalhado: ${brl(planned)} · Realizado: ${brl(actual)} · Diferença: ${brl(planned - actual)}`,
+          ),
+        );
+      }
+      const filters = el("div", { class: "toolbar" });
+      if (res === "tasks") {
+        for (const [key, label, options] of [
+          ["phase_id", "Todas as fases", phases.map((p) => [p.id, p.title])],
+          ["status", "Todas as situações", taskStatuses.map((s) => [s, s])],
+        ]) {
+          const select = el(
+            "select",
+            { "aria-label": label },
+            el("option", { value: "" }, label),
+            options.map(([v, t]) => el("option", { value: v }, t)),
+          );
+          selects.push([key, select]);
+          select.onchange = draw;
+          filters.append(select);
+        }
+      }
+      if (res === "risks") {
+        const select = el(
+          "select",
+          { "aria-label": "Prioridade" },
+          ["Todas as prioridades", "Alta", "Média", "Baixa"].map((v, i) =>
+            el("option", { value: i ? v : "" }, v),
+          ),
+        );
+        selects.push(["priority", select]);
+        select.onchange = draw;
+        filters.append(select);
+      }
+      function draw() {
+        const filtered = rows.filter((r) =>
+          selects.every(
+            ([k, s]) =>
+              !s.value ||
+              (k === "priority" ? riskPriority(r).label : r[k]) === s.value,
+          ),
+        );
+        const keys = Object.keys(models[res].fields);
+        listing.replaceChildren(
+          filtered.length
+            ? table(
+                [
+                  ...keys.map((k) => models[res].fields[k][0]),
+                  ...(res === "risks" ? ["Prioridade"] : []),
+                  "Ações",
+                ],
+                filtered.map((r) => [
+                  ...keys.map((k) => {
+                    const type = models[res].fields[k][2];
+                    if (
+                      res === "tasks" &&
+                      k === "title" &&
+                      r.end_date &&
+                      r.end_date < today &&
+                      !["Concluída", "Cancelada"].includes(r.status)
+                    )
+                      return el(
+                        "div",
+                        {},
+                        r.title,
+                        el("span", { class: "badge overdue" }, "Atrasada"),
+                      );
+                    if (type === "money") return brl(r[k]);
+                    if (type === "date") return date(r[k]);
+                    if (type === "phase")
+                      return (
+                        phases.find((p) => p.id === r[k])?.title || "Sem fase"
+                      );
+                    if (type === "url" && r[k])
+                      return el(
+                        "a",
+                        {
+                          href: r[k],
+                          target: "_blank",
+                          rel: "noopener noreferrer",
+                        },
+                        "Abrir referência",
+                      );
+                    return r[k];
+                  }),
+                  ...(res === "risks" ? [riskPriority(r).label] : []),
+                  el(
+                    "div",
+                    { class: "actions" },
+                    canWrite
+                      ? button("Editar", () =>
+                          editDialog(res, r, phases, async (data) => {
+                            await api(`${base}/${res}/${r.id}`, "PATCH", {
+                              ...data,
+                              version: r.version,
+                            });
+                            await refresh();
+                          }),
+                        )
+                      : null,
+                    canDelete
+                      ? button(
+                          "Excluir",
+                          async () => {
+                            if (await confirmAction("Excluir este registro?")) {
+                              try {
+                                await api(`${base}/${res}/${r.id}`, "DELETE", {
+                                  version: r.version,
+                                });
+                                await refresh();
+                              } catch (e) {
+                                error.replaceChildren(note(e.message, "error"));
+                              }
+                            }
+                          },
+                          "danger-text",
+                        )
+                      : null,
+                  ),
+                ]),
+              )
+            : empty(),
+        );
+      }
+      result.append(filters, listing);
+      draw();
+      body.replaceChildren(result);
+    }
+    await renderResource(resource);
+  }
+  return { node: root, cleanup };
+}
+
+out.projectPage = projectPage;
+  },
+
+  // frontend/src/pages/projects.js
+  "frontend/src/pages/projects.js": (out, load) => {
+
+const { api } = load("frontend/src/api/client.js");
+const { el, button, note, empty, confirmAction } = load("frontend/src/components/ui.js");
+const { editDialog } = load("frontend/src/components/forms.js");
+const { date } = load("frontend/src/utils/format.js");
+const { statuses } = load("shared/models.js");
+async function projectsPage(me) {
+  const root = el("main", { class: "container" }),
+    cards = el("div", { class: "project-grid" }),
+    error = el("div"),
+    search = el("input", {
+      type: "search",
+      placeholder: "Buscar projetos...",
+      "aria-label": "Buscar projetos",
+    }),
+    filter = el(
+      "select",
+      { "aria-label": "Filtrar situação" },
+      ["Todos", ...statuses].map((v) => el("option", {}, v)),
+    ),
+    archive = el("input", { type: "checkbox" });
+  let rows = [];
+  const render = () => {
+    const filtered = rows.filter(
+      (p) =>
+        p.name.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()) &&
+        (filter.value === "Todos" || p.status === filter.value),
+    );
+    cards.replaceChildren(
+      ...filtered.map((p) =>
+        el(
+          "article",
+          { class: "project-card" },
+          el(
+            "div",
+            { class: "card-top" },
+            el("span", { class: "project-icon", "aria-hidden": true }, "▤"),
+            el("span", { class: "badge" }, p.status),
+          ),
+          el("h2", {}, el("a", { href: `#/projects/${p.id}` }, p.name)),
+          el(
+            "p",
+            { class: "card-description" },
+            p.description || "Sem descrição",
+          ),
+          el("div", { class: "muted" }, "Término previsto: ", date(p.end_date)),
+          el(
+            "div",
+            { class: "progress-label" },
+            "Progresso",
+            el(
+              "strong",
+              {},
+              p.progress === null ? "Não calculado" : `${p.progress}%`,
+            ),
+          ),
+          p.progress === null
+            ? null
+            : el("progress", {
+                value: p.progress,
+                max: 100,
+                "aria-label": "Progresso",
+              }),
+          me.admin
+            ? el(
+                "div",
+                { class: "card-actions" },
+                button("Editar", () =>
+                  editDialog("projects", p, [], async (data) => {
+                    await api(`/projects/${p.id}`, "PATCH", {
+                      ...data,
+                      version: p.version,
+                    });
+                    await load();
+                  }),
+                ),
+                button(p.archived_at ? "Restaurar" : "Arquivar", async () => {
+                  if (
+                    await confirmAction(
+                      p.archived_at
+                        ? "Restaurar este projeto?"
+                        : "Arquivar e ocultar da lista padrão, preservando os dados?",
+                    )
+                  )
+                    await change(() =>
+                      api(`/projects/${p.id}/archive`, "PUT", {
+                        archived: !p.archived_at,
+                        version: p.version,
+                      }),
+                    );
+                }),
+                button(
+                  "Excluir",
+                  async () => {
+                    if (
+                      await confirmAction(
+                        "Excluir definitivamente o projeto, todos os registros de gestão e mensagens do chat coletivo? Conversas diretas e auditoria serão preservadas.",
+                      )
+                    )
+                      await change(() =>
+                        api(`/projects/${p.id}`, "DELETE", {
+                          version: p.version,
+                        }),
+                      );
+                  },
+                  "danger-text",
+                ),
+              )
+            : null,
+        ),
+      ),
+    );
+    if (!filtered.length)
+      cards.append(
+        empty(
+          rows.length
+            ? "Nenhum projeto corresponde à busca."
+            : me.admin
+              ? "Comece cadastrando seu primeiro projeto."
+              : "Você ainda não recebeu acesso a projetos nesta listagem.",
+        ),
+      );
+  };
+  const change = async (fn) => {
+    try {
+      await fn();
+      await load();
+    } catch (e) {
+      error.replaceChildren(note(e.message, "error"));
+    }
+  };
+  const load = async () => {
+    cards.replaceChildren(note("Carregando projetos..."));
+    rows = await api(`/projects?archived=${archive.checked}`);
+    render();
+  };
+  search.oninput = render;
+  filter.onchange = render;
+  archive.onchange = () => change(async () => {});
+  root.append(
+    el(
+      "div",
+      { class: "page-title" },
+      el(
+        "div",
+        {},
+        el("p", { class: "eyebrow" }, "SEU ESPAÇO DE TRABALHO"),
+        el("h1", {}, "Meus Projetos"),
+        el(
+          "p",
+          { class: "muted" },
+          "Organize o planejamento e acompanhe cada entrega.",
+        ),
+      ),
+      me.admin
+        ? button(
+            "+ Novo Projeto",
+            () =>
+              editDialog("projects", {}, [], async (data) => {
+                await api("/projects", "POST", data);
+                await load();
+              }),
+            "primary",
+          )
+        : null,
+    ),
+    el(
+      "div",
+      { class: "toolbar" },
+      search,
+      filter,
+      el("label", { class: "check" }, archive, "Arquivados"),
+    ),
+    error,
+    cards,
+  );
+  await load();
+  return root;
+}
+
+out.projectsPage = projectsPage;
+  },
+
+  // frontend/src/router.js
+  "frontend/src/router.js": (out, load) => {
+function route() {
+  return location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
+}
+function go(path) {
+  location.hash = "#/" + path;
+}
+
+out.route = route;
+out.go = go;
+  },
+
+  // frontend/src/exports/index.js
+  "frontend/src/exports/index.js": (out, load) => {
+
+const { models } = load("shared/models.js");
+function csvCell(value) {
+  let s = String(value ?? "");
+  if (/^[\s\uFEFF]*[=+\-@\t\r\n]/.test(s)) s = "'" + s;
+  return '"' + s.replaceAll('"', '""') + '"';
+}
+function csv(resource, records) {
+  const fields = models[resource].fields;
+  return (
+    "\uFEFF" +
+    [
+      Object.values(fields).map((v) => v[0]),
+      ...records.map((r) =>
+        Object.keys(fields).map((k) =>
+          k.endsWith("_cents")
+            ? (r[k] / 100).toFixed(2).replace(".", ",")
+            : r[k],
+        ),
+      ),
+    ]
+      .map((row) => row.map(csvCell).join(";"))
+      .join("\r\n")
+  );
+}
+function charterTxt(project, charter) {
+  return (
+    `TERMO DE ABERTURA DO PROJETO\r\n${project.name}\r\n\r\n` +
+    Object.entries(models.charter.fields)
+      .map(
+        ([k, [label]]) =>
+          `${label}\r\n${k.endsWith("_cents") ? ((charter?.[k] || 0) / 100).toFixed(2) : charter?.[k] || "Não informado"}\r\n`,
+      )
+      .join("\r\n")
+  );
+}
+function projectJson(data) {
+  return JSON.stringify(data, null, 2);
+}
+function download(name, content, type) {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+out.csvCell = csvCell;
+out.csv = csv;
+out.charterTxt = charterTxt;
+out.projectJson = projectJson;
+out.download = download;
+  },
+
+  // frontend/src/utils/format.js
+  "frontend/src/utils/format.js": (out, load) => {
+const brl = (v) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+    (v || 0) / 100,
+  );
+const date = (v) =>
+  v ? String(v).slice(0, 10).split("-").reverse().join("/") : "Não informado";
+const time = (v) => new Date(v).toLocaleString("pt-BR");
+function cents(v) {
+  const s = String(v).trim().replace(",", ".");
+  if (!/^\d+(\.\d{1,2})?$/.test(s))
+    throw Error("Valor monetário inválido. Use até duas casas decimais.");
+  const [a, b = ""] = s.split(".");
+  const n = Number(a) * 100 + Number(b.padEnd(2, "0"));
+  if (!Number.isSafeInteger(n)) throw Error("Valor muito grande");
+  return n;
+}
+
+out.brl = brl;
+out.date = date;
+out.time = time;
+out.cents = cents;
+  },
+
+  // frontend/src/utils/polling.js
+  "frontend/src/utils/polling.js": (out, load) => {
+function pollVisible(task, onError) {
+  let stopped = false,
+    running = false,
+    timer,
+    delay = 5000;
+  async function tick() {
+    clearTimeout(timer);
+    if (stopped) return;
+    if (document.hidden || running) {
+      timer = setTimeout(tick, delay);
+      return;
+    }
+    running = true;
+    try {
+      await task();
+      delay = 5000;
+    } catch (error) {
+      delay = Math.min(60000, delay * 2);
+      if (!stopped) onError(error);
+    } finally {
+      running = false;
+      if (!stopped) timer = setTimeout(tick, delay);
+    }
+  }
+  const visible = () => {
+    if (!document.hidden) tick();
+  };
+  document.addEventListener("visibilitychange", visible);
+  timer = setTimeout(tick, delay);
+  return () => {
+    stopped = true;
+    clearTimeout(timer);
+    document.removeEventListener("visibilitychange", visible);
+  };
+}
+
+out.pollVisible = pollVisible;
+  },
+
+  // shared/models.js
+  "shared/models.js": (out, load) => {
+
+const { z } = load("zod");
+const text = z.string().trim().max(10000).default("");
+const required = z.string().trim().min(1, "Campo obrigatório").max(300);
+const date = z
+  .string()
+  .refine(
+    (v) =>
+      v === "" ||
+      (/^\d{4}-\d{2}-\d{2}$/.test(v) &&
+        !Number.isNaN(Date.parse(v)) &&
+        new Date(v).toISOString().slice(0, 10) === v),
+    "Data inválida",
+  )
+  .default("");
+const money = z.number().int().min(0).max(999999999999).default(0);
+const enumField = (values) => z.enum(values);
+const statuses = [
+  "Planejamento",
+  "Em andamento",
+  "Em atenção",
+  "Concluído",
+];
+const taskStatuses = [
+  "Não iniciada",
+  "Em andamento",
+  "Bloqueada",
+  "Concluída",
+  "Cancelada",
+];
+const levels = ["Baixa", "Média", "Alta"];
+const url = z
+  .string()
+  .max(2048)
+  .refine(
+    (v) => !v || (/^https?:\/\//i.test(v) && URL.canParse(v)),
+    "Informe uma URL HTTP(S)",
+  )
+  .default("");
+const models = {
+  projects: {
+    label: "Projetos",
+    fields: {
+      name: ["Nome", required],
+      description: ["Descrição", text, "textarea"],
+      start_date: ["Data de início", date, "date"],
+      end_date: ["Término previsto", date, "date"],
+      status: ["Situação", enumField(statuses), statuses],
+      budget_cents: ["Orçamento vigente (R$)", money, "money"],
+    },
+  },
+  charter: {
+    label: "TAP e Escopo",
+    fields: {
+      justification: ["Justificativa", text, "textarea"],
+      objective: ["Objetivo", text, "textarea"],
+      sponsor: ["Patrocinador", text],
+      manager: ["Gerente responsável (não concede acesso)", text],
+      scope: ["Escopo inicial", text, "textarea"],
+      exclusions: ["Exclusões", text, "textarea"],
+      deliverables: ["Principais entregas", text, "textarea"],
+      assumptions: ["Premissas", text, "textarea"],
+      constraints: ["Restrições", text, "textarea"],
+      success_criteria: ["Critérios de sucesso", text, "textarea"],
+      initial_start_date: ["Início de referência", date, "date"],
+      initial_end_date: ["Término de referência", date, "date"],
+      initial_budget_cents: [
+        "Orçamento inicial de referência (R$)",
+        money,
+        "money",
+      ],
+    },
+  },
+  phases: {
+    label: "Fases",
+    fields: {
+      title: ["Nome da fase", required],
+      position: [
+        "Ordem",
+        z.number().int().min(0).max(100000).default(0),
+        "number",
+      ],
+    },
+  },
+  tasks: {
+    label: "Atividades e marcos",
+    fields: {
+      title: ["Título", required],
+      description: ["Descrição", text, "textarea"],
+      phase_id: ["Fase", z.string().max(100).default(""), "phase"],
+      responsible: ["Responsável", text],
+      start_date: ["Início planejado", date, "date"],
+      end_date: ["Término planejado", date, "date"],
+      status: ["Situação", enumField(taskStatuses), taskStatuses],
+      completed_date: ["Data de conclusão", date, "date"],
+      kind: ["Tipo", enumField(["atividade", "marco"]), ["atividade", "marco"]],
+    },
+  },
+  risks: {
+    label: "Riscos",
+    fields: {
+      code: ["Identificador", required],
+      description: ["Descrição", required, "textarea"],
+      probability: ["Probabilidade", enumField(levels), levels],
+      impact: ["Impacto", enumField(levels), levels],
+      responsible: ["Responsável", text],
+      response_plan: ["Plano de resposta", text, "textarea"],
+      status: [
+        "Situação",
+        enumField(["Aberto", "Em tratamento", "Encerrado"]),
+        ["Aberto", "Em tratamento", "Encerrado"],
+      ],
+    },
+  },
+  costs: {
+    label: "Custos",
+    fields: {
+      category: ["Categoria", required],
+      description: ["Descrição", required],
+      planned_cents: ["Valor previsto (R$)", money, "money"],
+      actual_cents: ["Valor realizado (R$)", money, "money"],
+      date: ["Data", date, "date"],
+      notes: ["Observações", text, "textarea"],
+    },
+  },
+  quality: {
+    label: "Qualidade",
+    fields: {
+      code: ["Identificador", required],
+      requirement: ["Requisito", required, "textarea"],
+      acceptance: ["Critério de aceitação", text, "textarea"],
+      responsible: ["Responsável", text],
+      result: ["Resultado da verificação", text, "textarea"],
+      status: [
+        "Situação",
+        enumField(["Pendente", "Aprovado", "Reprovado"]),
+        ["Pendente", "Aprovado", "Reprovado"],
+      ],
+      evidence_url: ["Evidência (URL)", url, "url"],
+    },
+  },
+  stakeholders: {
+    label: "Partes interessadas",
+    fields: {
+      name: ["Nome", required],
+      organization: ["Organização", text],
+      role: ["Função", text],
+      contact: ["Contato", text],
+      interest: ["Interesse", enumField(levels), levels],
+      influence: ["Influência", enumField(levels), levels],
+      notes: ["Observações", text, "textarea"],
+    },
+  },
+  documents: {
+    label: "Documentos",
+    fields: {
+      name: ["Nome", required],
+      category: ["Categoria", text],
+      description: ["Descrição", text, "textarea"],
+      url: ["URL do arquivo", url.refine((v) => !!v, "URL obrigatória"), "url"],
+    },
+  },
+};
+const tables = {
+  projects: "projects",
+  charter: "project_charters",
+  phases: "project_phases",
+  tasks: "project_tasks",
+  risks: "project_risks",
+  costs: "project_costs",
+  quality: "project_quality_checks",
+  stakeholders: "project_stakeholders",
+  documents: "project_documents",
+};
+function schemaFor(resource) {
+  return z
+    .object(
+      Object.fromEntries(
+        Object.entries(models[resource].fields).map(([k, v]) => [k, v[1]]),
+      ),
+    )
+    .strict()
+    .superRefine((v, c) => {
+      for (const [a, b] of [
+        ["start_date", "end_date"],
+        ["initial_start_date", "initial_end_date"],
+      ])
+        if (v[a] && v[b] && v[a] > v[b])
+          c.addIssue({
+            code: "custom",
+            path: [b],
+            message: "Término anterior ao início",
+          });
+      if (resource === "tasks" && v.status === "Concluída" && !v.completed_date)
+        c.addIssue({
+          code: "custom",
+          path: ["completed_date"],
+          message: "Informe a data de conclusão",
+        });
+    });
+}
+function riskPriority(r) {
+  const score =
+    (levels.indexOf(r.probability) + 1) * (levels.indexOf(r.impact) + 1);
+  return { score, label: score >= 6 ? "Alta" : score >= 3 ? "Média" : "Baixa" };
+}
+
+out.statuses = statuses;
+out.taskStatuses = taskStatuses;
+out.levels = levels;
+out.models = models;
+out.tables = tables;
+out.schemaFor = schemaFor;
+out.riskPriority = riskPriority;
+  },
+};
+const cache = Object.create(null);
+function load(id) {
+  if (Object.prototype.hasOwnProperty.call(externals, id)) return externals[id];
+  if (Object.prototype.hasOwnProperty.call(cache, id)) return cache[id];
+  const m = modules[id];
+  if (!m) throw Error("Módulo não encontrado: " + id);
+  const out = {};
+  cache[id] = out;
+  m(out, load);
+  return out;
+}
+load("frontend/src/main.js");
+</script>
+</body>
+</html>
