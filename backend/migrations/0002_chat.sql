@@ -1,7 +1,0 @@
-CREATE TABLE conversations(id TEXT PRIMARY KEY,type TEXT NOT NULL CHECK(type IN ('project','direct')),project_id TEXT UNIQUE REFERENCES projects(id) ON DELETE CASCADE,pair_key TEXT UNIQUE,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,CHECK((type='project' AND project_id IS NOT NULL AND pair_key IS NULL) OR (type='direct' AND project_id IS NULL AND pair_key IS NOT NULL)));
-CREATE TABLE direct_conversation_members(conversation_id TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,uid TEXT NOT NULL REFERENCES users(uid),PRIMARY KEY(conversation_id,uid));
-CREATE TRIGGER direct_members_immutable BEFORE UPDATE ON direct_conversation_members BEGIN SELECT RAISE(ABORT,'Participantes imutáveis'); END;
-CREATE TABLE messages(seq INTEGER PRIMARY KEY AUTOINCREMENT,id TEXT NOT NULL UNIQUE,conversation_id TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,author_uid TEXT NOT NULL REFERENCES users(uid),text TEXT NOT NULL CHECK(length(trim(text)) BETWEEN 1 AND 2000),client_id TEXT NOT NULL,created_at TEXT NOT NULL,UNIQUE(conversation_id,author_uid,client_id));
-CREATE INDEX messages_history ON messages(conversation_id,seq);
-CREATE INDEX messages_rate ON messages(author_uid,created_at);
-CREATE TABLE conversation_reads(uid TEXT NOT NULL REFERENCES users(uid),conversation_id TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,last_seq INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(uid,conversation_id));
